@@ -1,17 +1,26 @@
 from fastapi import FastAPI, Query
-import httpx, time
+import httpx, time, threading
+
+def keep_alive():
+    while True:
+        time.sleep(600)
+        try:
+            httpx.get("https://lon-lmis.onrender.com/api/solve-account?api_key=hainguyen13122011")
+        except:
+            pass
+
+threading.Thread(target=keep_alive, daemon=True).start()
 
 app = FastAPI()
 
-YESCAPTCHA_KEY = "ed0e63b5afe16439765adca97707ce93b5d04d42124299"  # thay key của mày vào đây
-MY_API_KEY = "hainguyen13122011"  # tự đặt password để bảo vệ endpoint
+YESCAPTCHA_KEY = "ed0e63b5afe16439765adca97707ce93b5d04d42124299"  # giữ nguyên key của mày
+MY_API_KEY = "hainguyen13122011"
 
 @app.get("/api/solve-account")
 def solve(api_key: str = Query(...)):
     if api_key != MY_API_KEY:
         return {"error": "unauthorized"}
 
-    # Tạo task
     t = httpx.post("https://api.yescaptcha.com/createTask", json={
         "clientKey": YESCAPTCHA_KEY,
         "task": {
@@ -25,7 +34,6 @@ def solve(api_key: str = Query(...)):
     if not task_id:
         return {"error": t}
 
-    # Poll kết quả
     for _ in range(60):
         r = httpx.post("https://api.yescaptcha.com/getTaskResult", json={
             "clientKey": YESCAPTCHA_KEY,
