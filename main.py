@@ -14,7 +14,7 @@ threading.Thread(target=keep_alive, daemon=True).start()
 
 app = FastAPI()
 
-SOLVEX_KEY = "sk_f7bje7s050kv4x92ea34z6g2w8tvq99m"
+YESCAPTCHA_KEY = "ed0e63b5afe16439765adca97707ce93b5d04d42124299"
 
 class SolveRequest(BaseModel):
     username: str = ""
@@ -22,18 +22,12 @@ class SolveRequest(BaseModel):
 
 @app.post("/api/solve-account")
 def solve(body: SolveRequest):
-    t = httpx.post("https://api.solvex.run/createTask", json={
-        "clientKey": SOLVEX_KEY,
+    t = httpx.post("https://api.yescaptcha.com/createTask", json={
+        "clientKey": YESCAPTCHA_KEY,
         "task": {
-            "type": "FunCaptchaTask",
+            "type": "FunCaptchaTaskProxyless",
             "websiteURL": "https://roblox.com",
             "websitePublicKey": "476068BF-9607-4799-B53D-966BE98E2B81",
-            "proxyType": "http",
-            "proxyAddress": "142.111.67.146",
-            "proxyPort": 5611,
-            "proxyLogin": "oiblryuw",
-            "proxyPassword": "vrmgep3awfb9",
-            "cookies": body.cookie,
         }
     }, timeout=30).json()
 
@@ -42,8 +36,8 @@ def solve(body: SolveRequest):
         return {"error": t}
 
     for _ in range(60):
-        r = httpx.post("https://api.solvex.run/getTaskResult", json={
-            "clientKey": SOLVEX_KEY,
+        r = httpx.post("https://api.yescaptcha.com/getTaskResult", json={
+            "clientKey": YESCAPTCHA_KEY,
             "taskId": task_id,
         }, timeout=30).json()
         if r.get("status") == "ready":
