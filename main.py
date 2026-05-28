@@ -1,11 +1,12 @@
-from fastapi import FastAPI, Query
+from fastapi import FastAPI
+from pydantic import BaseModel
 import httpx, time, threading
 
 def keep_alive():
     while True:
         time.sleep(600)
         try:
-            httpx.get("https://lon-lmis.onrender.com/api/solve-account?api_key=hainguyen13122011")
+            httpx.get("https://lon-lmis.onrender.com/")
         except:
             pass
 
@@ -13,20 +14,26 @@ threading.Thread(target=keep_alive, daemon=True).start()
 
 app = FastAPI()
 
-YESCAPTCHA_KEY = "ed0e63b5afe16439765adca97707ce93b5d04d42124299"  # giữ nguyên key của mày
-MY_API_KEY = "hainguyen13122011"
+SOLVEX_KEY = "sk_f7bje7s050kv4x92ea34z6g2w8tvq99m"
 
-@app.get("/api/solve-account")
-def solve(api_key: str = Query(...)):
-    if api_key != MY_API_KEY:
-        return {"error": "unauthorized"}
+class SolveRequest(BaseModel):
+    username: str = ""
+    cookie: str = ""
 
-    t = httpx.post("https://api.yescaptcha.com/createTask", json={
-        "clientKey": YESCAPTCHA_KEY,
+@app.post("/api/solve-account")
+def solve(body: SolveRequest):
+    t = httpx.post("https://api.solvex.run/createTask", json={
+        "clientKey": SOLVEX_KEY,
         "task": {
-            "type": "FunCaptchaTaskProxyless",
+            "type": "FunCaptchaTask",
             "websiteURL": "https://roblox.com",
             "websitePublicKey": "476068BF-9607-4799-B53D-966BE98E2B81",
+            "proxyType": "http",
+            "proxyAddress": "142.111.67.146",
+            "proxyPort": 5611,
+            "proxyLogin": "oiblryuw",
+            "proxyPassword": "vrmgep3awfb9",
+            "cookies": body.cookie,
         }
     }, timeout=30).json()
 
@@ -35,8 +42,8 @@ def solve(api_key: str = Query(...)):
         return {"error": t}
 
     for _ in range(60):
-        r = httpx.post("https://api.yescaptcha.com/getTaskResult", json={
-            "clientKey": YESCAPTCHA_KEY,
+        r = httpx.post("https://api.solvex.run/getTaskResult", json={
+            "clientKey": SOLVEX_KEY,
             "taskId": task_id,
         }, timeout=30).json()
         if r.get("status") == "ready":
