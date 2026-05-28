@@ -25,7 +25,7 @@ def solve(body: SolveRequest):
     t = httpx.post("https://api.yescaptcha.com/createTask", json={
         "clientKey": YESCAPTCHA_KEY,
         "task": {
-            "type": "FunCaptchaTaskProxyless",
+            "type": "FunCaptchaTaskProxyLessM1",
             "websiteURL": "https://roblox.com",
             "websitePublicKey": "476068BF-9607-4799-B53D-966BE98E2B81",
         }
