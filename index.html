@@ -408,7 +408,9 @@ function getFruitIcon(fruit) {
 }
 
 function renderCard(player, index) {
-  const isOnline = player.status === 'online';
+  const lastSeen = player.last_seen || player.updated_at;
+  const secAgo = (Date.now() - new Date(lastSeen)) / 1000;
+  const isOnline = player.status === 'online' && secAgo < 60;
   const fruit = player.fruit || 'None';
   return `
     <div class="player-card ${isOnline ? 'online' : 'offline'}" style="animation-delay:${index * 0.05}s">
@@ -475,5 +477,4 @@ fetchPlayers();
 setInterval(fetchPlayers, 30000);
 </script>
 </body>
-    </html>
-    
+</html>
