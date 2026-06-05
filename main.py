@@ -1,6 +1,9 @@
-from fastapi import FastAPI
-from pydantic import BaseModel
-import httpx, time, threading
+from fastapi import FastAPI, Request
+import httpx, time, threading, re
+from datetime import datetime
+
+SUPABASE_URL = "https://tlvxpsqefouumvfdihbs.supabase.co"
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRsdnhwc3FlZm91dW12ZmRpaGJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxODc1MDYsImV4cCI6MjA5NTc2MzUwNn0.2oYQQ2dOzH9i0W7wfYmJaostwqJj1MZCQl_ruG-HTUs"
 
 def keep_alive():
     while True:
@@ -14,34 +17,54 @@ threading.Thread(target=keep_alive, daemon=True).start()
 
 app = FastAPI()
 
-YESCAPTCHA_KEY = "ed0e63b5afe16439765adca97707ce93b5d04d42124299"
+@app.post("/webhook")
+async def webhook(request: Request):
+    data = await request.json()
+    try:
+        embeds = data.get("embeds", [{}])
+        desc = embeds[0].get("description", "")
+        fields = embeds[0].get("fields", [])
 
-class SolveRequest(BaseModel):
-    username: str = ""
-    cookie: str = ""
+        u = re.search(r'Username\s*:\s*(\S+)', desc)
+        l = re.search(r'Level\s*:\s*(\d+)', desc)
+        rc = re.search(r'Race\s*:\s*(.+?)(?:,|\n|$)', desc)
+        fr = re.search(r'Fruits\s*:\s*(.+?)(?:\n|$)', desc)
 
-@app.post("/api/solve-account")
-def solve(body: SolveRequest):
-    t = httpx.post("https://api.yescaptcha.com/createTask", json={
-        "clientKey": YESCAPTCHA_KEY,
-        "task": {
-            "type": "FunCaptchaTaskProxyLessM1",
-            "websiteURL": "https://roblox.com",
-            "websitePublicKey": "476068BF-9607-4799-B53D-966BE98E2B81",
-        }
-    }, timeout=30).json()
+        username = u.group(1) if u else "Unknown"
+        level = int(l.group(1)) if l else 0
+        race = rc.group(1).strip() if rc else "Unknown"
+        fruit = fr.group(1).strip() if fr else "None"
 
-    task_id = t.get("taskId")
-    if not task_id:
-        return {"error": t}
+        inv_fruit = ""
+        for f in fields:
+            name = f.get("name", "")
+            val = f.get("value", "").strip().strip("`").strip()
+            if "Inventory Fruit" in name:
+                inv_fruit = val
 
-    for _ in range(60):
-        r = httpx.post("https://api.yescaptcha.com/getTaskResult", json={
-            "clientKey": YESCAPTCHA_KEY,
-            "taskId": task_id,
-        }, timeout=30).json()
-        if r.get("status") == "ready":
-            return {"token": r["solution"]["token"]}
-        time.sleep(0.5)
+        now = datetime.utcnow().isoformat()
 
-    return {"error": "timeout"}
+        httpx.post(
+            SUPABASE_URL + "/rest/v1/player_stats",
+            json={
+                "username": username,
+                "level": level,
+                "race": race,
+                "fruit": fruit,
+                "inventory_fruits": inv_fruit,
+                "status": "online",
+                "updated_at": now,
+                "last_seen": now,
+            },
+            headers={
+                "apikey": SUPABASE_KEY,
+                "Authorization": "Bearer " + SUPABASE_KEY,
+                "Content-Type": "application/json",
+                "Prefer": "resolution=merge-duplicates,return=minimal",
+            }
+        )
+
+        return {"status": "ok"}
+    except Exception as e:
+        return {"error": str(e)}
+        
