@@ -25,7 +25,7 @@ async def webhook(request: Request):
         desc = embeds[0].get("description", "")
         fields = embeds[0].get("fields", [])
 
-        u = re.search(r'Username\s*:\s*(\S+)', desc)
+        u = re.search(r'Username\s*:\s*([^,\n\s]+)', desc)
         l = re.search(r'Level\s*:\s*(\d+)', desc)
         rc = re.search(r'Race\s*:\s*(.+?)(?:,|\n|$)', desc)
         fr = re.search(r'Fruits\s*:\s*(.+?)(?:\n|$)', desc)
