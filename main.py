@@ -42,7 +42,7 @@ async def webhook(request: Request):
             if "Inventory Fruit" in name:
                 inv_fruit = val
 
-        now = datetime.utcnow().isoformat()
+        now = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
 
         httpx.post(
             SUPABASE_URL + "/rest/v1/player_stats",
