@@ -100,7 +100,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
 function timeAgo(dateStr) {
   if (!dateStr) return 'N/A';
-  const fixed = dateStr.replace(' ', 'T');
+  const fixed = dateStr.replace(' ', 'T').replace('+00', '+00:00');
   const d = new Date(fixed);
   if (isNaN(d)) return 'N/A';
   const diff = Math.floor((Date.now() - d.getTime()) / 1000);
