@@ -100,8 +100,9 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
 function timeAgo(dateStr) {
   if (!dateStr) return 'N/A';
-  const fixed = dateStr.replace(' ', 'T').replace('+00', 'Z');
-  const d = new Date(fixed);
+  // Parse thủ công không dùng Date()
+  const clean = dateStr.replace('+00', '').replace(' ', 'T').split('.')[0];
+  const d = new Date(clean + 'Z');
   if (isNaN(d)) return 'N/A';
   const diff = Math.floor((Date.now() - d.getTime()) / 1000);
   if (diff < 60) return diff + 's trước';
