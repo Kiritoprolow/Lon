@@ -7,179 +7,64 @@
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #050810;
-    --panel: #0a0f1e;
-    --border: #1a2a4a;
-    --accent: #00d4ff;
-    --accent2: #ff6b00;
-    --text: #c8d8f0;
-    --muted: #4a6080;
+    --bg: #050810; --panel: #0a0f1e; --border: #1a2a4a;
+    --accent: #00d4ff; --accent2: #ff6b00; --text: #c8d8f0; --muted: #4a6080;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Rajdhani', sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+  body { background: var(--bg); color: var(--text); font-family: 'Rajdhani', sans-serif; min-height: 100vh; overflow-x: hidden; }
   body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: 
-      radial-gradient(ellipse at 20% 20%, rgba(0,212,255,0.06) 0%, transparent 60%),
-      radial-gradient(ellipse at 80% 80%, rgba(255,107,0,0.05) 0%, transparent 60%);
-    pointer-events: none;
-    z-index: 0;
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background: radial-gradient(ellipse at 20% 20%, rgba(0,212,255,0.06) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 80%, rgba(255,107,0,0.05) 0%, transparent 60%);
   }
   .grid-bg {
-    position: fixed;
-    inset: 0;
-    background-image: 
-      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background-image: linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
     background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
   }
-  .container {
-    position: relative;
-    z-index: 1;
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 20px 16px;
-  }
+  .container { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 20px 16px; }
   header { text-align: center; margin-bottom: 32px; padding: 24px 0; }
   .logo {
-    font-family: 'Orbitron', monospace;
-    font-size: clamp(22px, 5vw, 36px);
-    font-weight: 900;
-    letter-spacing: 4px;
+    font-family: 'Orbitron', monospace; font-size: clamp(22px, 5vw, 36px);
+    font-weight: 900; letter-spacing: 4px;
     background: linear-gradient(135deg, var(--accent), var(--accent2));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   }
   .logo::after {
-    content: 'FRUIT TRACKER';
-    display: block;
-    font-size: clamp(10px, 2vw, 13px);
-    letter-spacing: 8px;
-    color: var(--muted);
-    -webkit-text-fill-color: var(--muted);
-    margin-top: 4px;
+    content: 'FRUIT TRACKER'; display: block; font-size: clamp(10px, 2vw, 13px);
+    letter-spacing: 8px; color: var(--muted); -webkit-text-fill-color: var(--muted); margin-top: 4px;
   }
-  .refresh-bar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    margin-top: 16px;
-    font-size: 13px;
-    color: var(--muted);
-    font-family: 'Orbitron', monospace;
-    letter-spacing: 1px;
-  }
-  .refresh-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--accent);
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(0.8); }
-  }
-  .summary-bar {
-    display: flex;
-    gap: 16px;
-    margin-bottom: 24px;
-  }
-  .summary-item {
-    flex: 1;
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px 18px;
-    text-align: center;
-  }
-  .summary-num {
-    font-family: 'Orbitron', monospace;
-    font-size: 28px;
-    font-weight: 900;
-    line-height: 1;
-    color: var(--accent);
-  }
-  .summary-label {
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-top: 4px;
-    font-family: 'Orbitron', monospace;
-  }
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 16px;
-    margin-bottom: 24px;
-  }
+  .refresh-bar { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 16px; font-size: 13px; color: var(--muted); font-family: 'Orbitron', monospace; letter-spacing: 1px; }
+  .refresh-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.8); } }
+  .summary-bar { display: flex; gap: 16px; margin-bottom: 24px; }
+  .summary-item { flex: 1; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; text-align: center; }
+  .summary-num { font-family: 'Orbitron', monospace; font-size: 28px; font-weight: 900; line-height: 1; color: var(--accent); }
+  .summary-label { font-size: 11px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; font-family: 'Orbitron', monospace; }
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px; }
   .player-card {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.2s, border-color 0.2s;
-    animation: fadeIn 0.4s ease both;
+    background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px; position: relative; overflow: hidden;
+    transition: transform 0.2s, border-color 0.2s; animation: fadeIn 0.4s ease both;
   }
   .player-card:hover { transform: translateY(-2px); border-color: var(--accent); }
   .player-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--accent), transparent);
-    opacity: 0.6;
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent); opacity: 0.6;
   }
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(16px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
   .card-header { margin-bottom: 16px; }
-  .username {
-    font-family: 'Orbitron', monospace;
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    color: #fff;
-  }
+  .username { font-family: 'Orbitron', monospace; font-size: 14px; font-weight: 700; letter-spacing: 1px; color: #fff; }
   .card-body { display: flex; flex-direction: column; gap: 8px; }
-  .stat-row {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 8px 12px;
-    background: rgba(255,255,255,0.03);
-    border-radius: 8px;
-    border: 1px solid rgba(255,255,255,0.04);
-  }
+  .stat-row { display: flex; align-items: flex-start; gap: 10px; padding: 8px 12px; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid rgba(255,255,255,0.04); }
   .stat-icon { font-size: 16px; width: 24px; text-align: center; margin-top: 2px; }
   .stat-info { flex: 1; }
   .stat-label { font-size: 10px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; font-family: 'Orbitron', monospace; }
   .stat-value { font-size: 14px; font-weight: 600; color: var(--text); margin-top: 1px; }
   .stat-value.fruit { color: var(--accent2); }
   .stat-value.inv { color: #a0b8d0; font-size: 12px; line-height: 1.6; }
-  .updated-time {
-    font-size: 10px;
-    color: var(--muted);
-    font-family: 'Orbitron', monospace;
-    letter-spacing: 1px;
-    margin-top: 10px;
-    text-align: right;
-  }
+  .updated-time { font-size: 10px; color: var(--muted); font-family: 'Orbitron', monospace; letter-spacing: 1px; margin-top: 10px; text-align: right; }
   .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); grid-column: 1/-1; }
   .empty-state .icon { font-size: 48px; margin-bottom: 16px; opacity: 0.5; }
   .empty-state p { font-family: 'Orbitron', monospace; font-size: 13px; letter-spacing: 2px; }
@@ -198,28 +83,27 @@
       <span id="last-update">ĐANG TẢI...</span>
     </div>
   </header>
-
   <div class="summary-bar" id="summary" style="display:none">
     <div class="summary-item">
       <div class="summary-num" id="total-count">0</div>
       <div class="summary-label">Tổng tài khoản</div>
     </div>
   </div>
-
   <div id="players-grid" class="stats-grid">
     <div class="loading">ĐANG KẾT NỐI...</div>
   </div>
-
   <footer>BLOX FRUIT TRACKER &nbsp;•&nbsp; AUTO REFRESH 30S</footer>
 </div>
-
 <script>
 const SUPABASE_URL = 'https://tlvxpsqefouumvfdihbs.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRsdnhwc3FlZm91dW12ZmRpaGJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxODc1MDYsImV4cCI6MjA5NTc2MzUwNn0.2oYQQ2dOzH9i0W7wfYmJaostwqJj1MZCQl_ruG-HTUs';
 
 function timeAgo(dateStr) {
-  const utc = new Date(dateStr);
-  const diff = Math.floor((Date.now() - utc.getTime()) / 1000);
+  if (!dateStr) return 'N/A';
+  const fixed = dateStr.replace(' ', 'T');
+  const d = new Date(fixed);
+  if (isNaN(d)) return 'N/A';
+  const diff = Math.floor((Date.now() - d.getTime()) / 1000);
   if (diff < 60) return diff + 's trước';
   if (diff < 3600) return Math.floor(diff/60) + 'm trước';
   if (diff < 86400) return Math.floor(diff/3600) + 'h trước';
@@ -247,6 +131,10 @@ function getFruitIcon(fruit) {
   if (f.includes('shadow')) return '👤';
   if (f.includes('pain')) return '💀';
   if (f.includes('spirit')) return '👻';
+  if (f.includes('yeti')) return '⛄';
+  if (f.includes('tiger')) return '🐯';
+  if (f.includes('spider')) return '🕷️';
+  if (f.includes('creation')) return '✨';
   return '🍎';
 }
 
@@ -305,10 +193,7 @@ function renderCard(player, index) {
 async function fetchPlayers() {
   try {
     const res = await fetch(SUPABASE_URL + '/rest/v1/player_stats?select=*&order=updated_at.desc', {
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': 'Bearer ' + SUPABASE_KEY
-      }
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
     });
     const data = await res.json();
     const grid = document.getElementById('players-grid');
