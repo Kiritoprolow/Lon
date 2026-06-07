@@ -44,57 +44,42 @@
   .summary-label { font-size: 11px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; font-family: 'Orbitron', monospace; }
   .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-bottom: 24px; }
 
-  /* ── PLAYER CARD ── */
+  /* PLAYER CARD */
   .player-card {
     background: var(--panel); border: 1px solid var(--border); border-radius: 14px;
     overflow: hidden; position: relative;
     transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
     animation: fadeIn 0.4s ease both;
   }
-  .player-card:hover {
-    transform: translateY(-3px);
-    border-color: var(--accent);
-    box-shadow: 0 8px 32px rgba(0,212,255,0.12);
-  }
+  .player-card:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: 0 8px 32px rgba(0,212,255,0.12); }
   .player-card::before {
     content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
     background: linear-gradient(90deg, transparent, var(--accent), transparent); opacity: 0.7;
   }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 
-  /* ── FRUIT BANNER ── */
+  /* FRUIT BANNER */
   .fruit-banner {
     position: relative; height: 110px;
     background: linear-gradient(135deg, #0d1628 0%, #111c35 100%);
-    display: flex; align-items: center; justify-content: center;
-    overflow: hidden;
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
   }
   .fruit-banner::after {
     content: ''; position: absolute; inset: 0;
     background: radial-gradient(ellipse at center, rgba(0,212,255,0.08) 0%, transparent 70%);
   }
   .fruit-banner-img {
-    width: 88px; height: 88px; object-fit: contain;
-    position: relative; z-index: 1;
+    width: 88px; height: 88px; object-fit: contain; position: relative; z-index: 1;
     filter: drop-shadow(0 0 14px rgba(0,212,255,0.35));
     transition: transform 0.3s ease, filter 0.3s ease;
   }
-  .player-card:hover .fruit-banner-img {
-    transform: scale(1.08);
-    filter: drop-shadow(0 0 22px rgba(0,212,255,0.55));
-  }
-  .fruit-banner-emoji {
-    font-size: 56px; position: relative; z-index: 1;
-    transition: transform 0.3s ease;
-    line-height: 1;
-  }
+  .player-card:hover .fruit-banner-img { transform: scale(1.08); filter: drop-shadow(0 0 22px rgba(0,212,255,0.55)); }
+  .fruit-banner-emoji { font-size: 56px; position: relative; z-index: 1; transition: transform 0.3s ease; line-height: 1; }
   .player-card:hover .fruit-banner-emoji { transform: scale(1.1); }
   .fruit-banner-label {
     position: absolute; bottom: 8px; right: 10px; z-index: 2;
-    font-family: 'Orbitron', monospace; font-size: 9px; letter-spacing: 1.5px;
-    color: var(--accent); opacity: 0.7;
+    font-family: 'Orbitron', monospace; font-size: 9px; letter-spacing: 1.5px; color: var(--accent); opacity: 0.7;
   }
-  /* rarity glow color per type */
   .fruit-banner.mythical::after { background: radial-gradient(ellipse at center, rgba(255,107,0,0.14) 0%, transparent 70%); }
   .fruit-banner.mythical .fruit-banner-img { filter: drop-shadow(0 0 16px rgba(255,107,0,0.5)); }
   .fruit-banner.legendary::after { background: radial-gradient(ellipse at center, rgba(255,200,0,0.13) 0%, transparent 70%); }
@@ -102,7 +87,7 @@
   .fruit-banner.rare::after { background: radial-gradient(ellipse at center, rgba(180,80,255,0.13) 0%, transparent 70%); }
   .fruit-banner.rare .fruit-banner-img { filter: drop-shadow(0 0 16px rgba(180,80,255,0.45)); }
 
-  /* ── CARD BODY ── */
+  /* CARD BODY */
   .card-body-wrap { padding: 16px 18px 14px; }
   .card-header { margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; }
   .username { font-family: 'Orbitron', monospace; font-size: 13px; font-weight: 700; letter-spacing: 1px; color: #fff; }
@@ -117,27 +102,33 @@
   .stat-info { flex: 1; }
   .stat-label { font-size: 10px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; font-family: 'Orbitron', monospace; }
   .stat-value { font-size: 14px; font-weight: 600; color: var(--text); margin-top: 1px; }
-  .stat-value.fruit { color: var(--accent2); }
-  .stat-value.inv { color: #a0b8d0; font-size: 12px; line-height: 1.6; }
+  .stat-value.fruit-text { color: var(--accent2); }
   .updated-time { font-size: 10px; color: var(--muted); font-family: 'Orbitron', monospace; letter-spacing: 1px; margin-top: 10px; text-align: right; }
 
-  /* ── MISC ── */
+  /* KHO TRÁI - ảnh nhỏ */
+  .inv-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .inv-item {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 8px; padding: 6px 5px; width: 56px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .inv-item:hover { background: rgba(0,212,255,0.08); border-color: rgba(0,212,255,0.3); }
+  .inv-item img { width: 36px; height: 36px; object-fit: contain; filter: drop-shadow(0 0 5px rgba(0,212,255,0.25)); }
+  .inv-item .inv-emoji { font-size: 26px; line-height: 1; }
+  .inv-item .inv-name {
+    font-family: 'Orbitron', monospace; font-size: 7px; color: var(--muted);
+    letter-spacing: 0.3px; text-align: center; line-height: 1.2; word-break: break-word;
+  }
+  .inv-empty { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* MISC */
   .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); grid-column: 1/-1; }
   .empty-state .icon { font-size: 48px; margin-bottom: 16px; opacity: 0.5; }
   .empty-state p { font-family: 'Orbitron', monospace; font-size: 13px; letter-spacing: 2px; }
   .loading { text-align: center; padding: 40px; font-family: 'Orbitron', monospace; color: var(--accent); letter-spacing: 3px; font-size: 13px; animation: blink 1s infinite; }
   @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
   footer { text-align: center; padding: 24px 0; color: var(--muted); font-size: 11px; font-family: 'Orbitron', monospace; letter-spacing: 2px; border-top: 1px solid var(--border); margin-top: 16px; }
-
-  /* ── UPLOAD GUIDE BANNER ── */
-  .guide-banner {
-    background: rgba(0,212,255,0.05); border: 1px dashed rgba(0,212,255,0.2);
-    border-radius: 10px; padding: 12px 18px; margin-bottom: 20px;
-    font-family: 'Orbitron', monospace; font-size: 11px; color: var(--muted);
-    letter-spacing: 1px; line-height: 1.8; display: none;
-  }
-  .guide-banner.show { display: block; }
-  .guide-banner a { color: var(--accent); text-decoration: none; }
 </style>
 </head>
 <body>
@@ -165,126 +156,135 @@
 const SUPABASE_URL = 'https://tlvxpsqefouumvfdihbs.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRsdnhwc3FlZm91dW12ZmRpaGJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxODc1MDYsImV4cCI6MjA5NTc2MzUwNn0.2oYQQ2dOzH9i0W7wfYmJaostwqJj1MZCQl_ruG-HTUs';
 
-// ══════════════════════════════════════════════
-//  🍎 FRUIT IMAGE MAP — điền URL ảnh vào đây!
-//  Key = tên fruit viết thường (lowercase)
-//  Value = { img: 'URL_ảnh', rarity: 'mythical|legendary|rare|common' }
-//
-//  Rarity ảnh hưởng màu glow của banner:
-//    mythical  → cam  (dragon, leopard, kitsune...)
-//    legendary → vàng (buddha, dough, phoenix...)
-//    rare      → tím  (gravity, string, sound...)
-//    common    → xanh (mặc định)
-// ══════════════════════════════════════════════
-const BASE = 'https://raw.githubusercontent.com/Kiritoprolow/Lon/main/';
+const BASE = 'https://raw.githubusercontent.com/Kiritoprolow/Lon/0afe632/';
 
+// KEY phải khớp với tên fruit trong DB (viết thường, không dấu)
 const FRUIT_MAP = {
-  // --- MYTHICAL ---
-  'dragon':   { img: BASE + 'Dragon_Fruit.webp',   rarity: 'mythical' },
-  'kitsune':  { img: BASE + 'Kitsune_Fruit.webp',  rarity: 'mythical' },
-  'spirit':   { img: BASE + 'Spirit_Fruit.webp',   rarity: 'mythical' },
-  'yeti':     { img: BASE + 'Yeti_Fruit.webp',     rarity: 'mythical' },
-  't-rex':    { img: BASE + 'T-Rex_Fruit.webp',    rarity: 'mythical' },
-  'trex':     { img: BASE + 'T-Rex_Fruit.webp',    rarity: 'mythical' },
-
-  // --- LEGENDARY ---
-  'buddha':   { img: BASE + 'Buddha_Fruit.webp',   rarity: 'legendary' },
-  'dough':    { img: BASE + 'Dough_Fruit.webp',    rarity: 'legendary' },
-  'phoenix':  { img: BASE + 'Phoenix_Fruit.webp',  rarity: 'legendary' },
-  'sound':    { img: BASE + 'Sound_Fruit.webp',    rarity: 'legendary' },
-  'shadow':   { img: BASE + 'Shadow_Fruit.webp',   rarity: 'legendary' },
-  'pain':     { img: BASE + 'Pain_Fruit.webp',     rarity: 'legendary' },
-  'quake':    { img: BASE + 'Quake_Fruit.webp',    rarity: 'legendary' },
-  'creation': { img: BASE + 'Creation_Fruit.webp', rarity: 'legendary' },
-  'venom':    { img: BASE + 'Venom_Fruit.webp',    rarity: 'legendary' },
-  'mammoth':  { img: BASE + 'Mammoth_Fruit.webp',  rarity: 'legendary' },
-  'lightning':{ img: BASE + 'Lightning_Fruit.webp',rarity: 'legendary' },
-  'light':    { img: BASE + 'Lightning_Fruit.webp',rarity: 'legendary' },
-  'portal':   { img: BASE + 'Portal_Fruit.webp',   rarity: 'legendary' },
-  'control':  { img: BASE + 'Control_Fruit.webp',  rarity: 'legendary' },
-
-  // --- RARE ---
-  'gravity':  { img: BASE + 'Gravity_Fruit.webp',  rarity: 'rare' },
-  'gas':      { img: BASE + 'Gas_Fruit.webp',      rarity: 'rare' },
-  'spider':   { img: BASE + 'Spider_Fruit.webp',   rarity: 'rare' },
-  'tiger':    { img: BASE + 'Tiger_Fruit.webp',    rarity: 'rare' },
-  'love':     { img: BASE + 'Love_Fruit.webp',     rarity: 'rare' },
-  'blizzard': { img: BASE + 'Blizzard_Fruit.webp', rarity: 'rare' },
-
-  // --- Thêm fruit khác vào đây ---
-  // 'tên_fruit': { img: BASE + 'TenFruit_Fruit.webp', rarity: 'rare' },
+  // MYTHICAL
+  'dragon':    { img: BASE + 'Dragon_Fruit.webp',    rarity: 'mythical' },
+  'kitsune':   { img: BASE + 'Kitsune_Fruit.webp',   rarity: 'mythical' },
+  'spirit':    { img: BASE + 'Spirit_Fruit.webp',    rarity: 'mythical' },
+  'yeti':      { img: BASE + 'Yeti_Fruit.webp',      rarity: 'mythical' },
+  't-rex':     { img: BASE + 'T-Rex_Fruit.webp',     rarity: 'mythical' },
+  'trex':      { img: BASE + 'T-Rex_Fruit.webp',     rarity: 'mythical' },
+  // LEGENDARY
+  'buddha':    { img: BASE + 'Buddha_Fruit.webp',    rarity: 'legendary' },
+  'dough':     { img: BASE + 'Dough_Fruit.webp',     rarity: 'legendary' },
+  'phoenix':   { img: BASE + 'Phoenix_Fruit.webp',   rarity: 'legendary' },
+  'sound':     { img: BASE + 'Sound_Fruit.webp',     rarity: 'legendary' },
+  'shadow':    { img: BASE + 'Shadow_Fruit.webp',    rarity: 'legendary' },
+  'pain':      { img: BASE + 'Pain_Fruit.webp',      rarity: 'legendary' },
+  'quake':     { img: BASE + 'Quake_Fruit.webp',     rarity: 'legendary' },
+  'creation':  { img: BASE + 'Creation_Fruit.webp',  rarity: 'legendary' },
+  'venom':     { img: BASE + 'Venom_Fruit.webp',     rarity: 'legendary' },
+  'mammoth':   { img: BASE + 'Mammoth_Fruit.webp',   rarity: 'legendary' },
+  'lightning': { img: BASE + 'Lightning_Fruit.webp', rarity: 'legendary' },
+  'light':     { img: BASE + 'Lightning_Fruit.webp', rarity: 'legendary' },
+  'portal':    { img: BASE + 'Portal_Fruit.webp',    rarity: 'legendary' },
+  'control':   { img: BASE + 'Control_Fruit.webp',   rarity: 'legendary' },
+  // RARE
+  'gravity':   { img: BASE + 'Gravity_Fruit.webp',   rarity: 'rare' },
+  'gas':       { img: BASE + 'Gas_Fruit.webp',       rarity: 'rare' },
+  'spider':    { img: BASE + 'Spider_Fruit.webp',    rarity: 'rare' },
+  'tiger':     { img: BASE + 'Tiger_Fruit.webp',     rarity: 'rare' },
+  'love':      { img: BASE + 'Love_Fruit.webp',      rarity: 'rare' },
+  'blizzard':  { img: BASE + 'Blizzard_Fruit.webp',  rarity: 'rare' },
 };
-
-// Emoji fallback khi chưa có ảnh
-function getFruitEmoji(name) {
-  const f = (name || '').toLowerCase();
-  if (f.includes('dragon'))   return '🐉';
-  if (f.includes('leopard'))  return '🐆';
-  if (f.includes('kitsune'))  return '🦊';
-  if (f.includes('sound'))    return '🔊';
-  if (f.includes('gas'))      return '☁️';
-  if (f.includes('buddha'))   return '☯️';
-  if (f.includes('string'))   return '🕸️';
-  if (f.includes('gravity'))  return '🌀';
-  if (f.includes('phoenix'))  return '🔥';
-  if (f.includes('light'))    return '⚡';
-  if (f.includes('dark'))     return '🌑';
-  if (f.includes('ice'))      return '❄️';
-  if (f.includes('magma'))    return '🌋';
-  if (f.includes('quake'))    return '💥';
-  if (f.includes('dough'))    return '🫓';
-  if (f.includes('shadow'))   return '👤';
-  if (f.includes('pain'))     return '💀';
-  if (f.includes('spirit'))   return '👻';
-  if (f.includes('yeti'))     return '⛄';
-  if (f.includes('tiger'))    return '🐯';
-  if (f.includes('spider'))   return '🕷️';
-  if (f.includes('creation')) return '✨';
-  return '🍎';
-}
-
-// Tìm fruit data từ FRUIT_MAP theo tên
-function getFruitData(fruitName) {
-  if (!fruitName || fruitName === 'None') return null;
-  const lower = fruitName.toLowerCase();
-  for (const [key, val] of Object.entries(FRUIT_MAP)) {
-    if (lower.includes(key)) return { key, ...val };
-  }
-  return null;
-}
-
-// Render phần banner ảnh/emoji
-function renderFruitBanner(fruitName) {
-  if (!fruitName || fruitName === 'None') {
-    return `
-      <div class="fruit-banner">
-        <span class="fruit-banner-emoji">❌</span>
-        <span class="fruit-banner-label">NO FRUIT</span>
-      </div>`;
-  }
-
-  const data = getFruitData(fruitName);
-  const rarity = data?.rarity || 'common';
-  const imgUrl = data?.img || '';
-
-  const inner = imgUrl
-    ? `<img class="fruit-banner-img" src="${escapeHtml(imgUrl)}" alt="${escapeHtml(fruitName)}"
-          onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-       <span class="fruit-banner-emoji" style="display:none">${getFruitEmoji(fruitName)}</span>`
-    : `<span class="fruit-banner-emoji">${getFruitEmoji(fruitName)}</span>`;
-
-  return `
-    <div class="fruit-banner ${rarity}">
-      ${inner}
-      <span class="fruit-banner-label">${escapeHtml(fruitName.toUpperCase())}</span>
-    </div>`;
-}
 
 function escapeHtml(str) {
   return String(str)
     .replace(/&/g,'&amp;').replace(/</g,'&lt;')
     .replace(/>/g,'&gt;').replace(/"/g,'&quot;')
     .replace(/'/g,'&#39;');
+}
+
+function getFruitData(name) {
+  if (!name || name.toLowerCase() === 'none') return null;
+  const lower = name.toLowerCase();
+  for (const [key, val] of Object.entries(FRUIT_MAP)) {
+    if (lower.includes(key)) return { key, ...val };
+  }
+  return null;
+}
+
+function getFruitEmoji(name) {
+  const f = (name || '').toLowerCase();
+  if (f.includes('dragon'))    return '🐉';
+  if (f.includes('kitsune'))   return '🦊';
+  if (f.includes('spirit'))    return '👻';
+  if (f.includes('yeti'))      return '⛄';
+  if (f.includes('t-rex') || f.includes('trex')) return '🦖';
+  if (f.includes('buddha'))    return '☯️';
+  if (f.includes('dough'))     return '🫓';
+  if (f.includes('phoenix'))   return '🔥';
+  if (f.includes('sound'))     return '🔊';
+  if (f.includes('shadow'))    return '👤';
+  if (f.includes('pain'))      return '💀';
+  if (f.includes('quake'))     return '💥';
+  if (f.includes('creation'))  return '✨';
+  if (f.includes('venom'))     return '🐍';
+  if (f.includes('mammoth'))   return '🦣';
+  if (f.includes('lightning') || f.includes('light')) return '⚡';
+  if (f.includes('portal'))    return '🌀';
+  if (f.includes('control'))   return '🎮';
+  if (f.includes('gravity'))   return '🌀';
+  if (f.includes('gas'))       return '☁️';
+  if (f.includes('spider'))    return '🕷️';
+  if (f.includes('tiger'))     return '🐯';
+  if (f.includes('love'))      return '💗';
+  if (f.includes('blizzard'))  return '❄️';
+  return '🍎';
+}
+
+// Render banner ảnh lớn (trái đang dùng)
+function renderFruitBanner(fruitName) {
+  if (!fruitName || fruitName.toLowerCase() === 'none') {
+    return `<div class="fruit-banner">
+      <span class="fruit-banner-emoji">❌</span>
+      <span class="fruit-banner-label">NO FRUIT</span>
+    </div>`;
+  }
+  const data = getFruitData(fruitName);
+  const rarity = data?.rarity || 'common';
+  const imgUrl = data?.img || '';
+  const inner = imgUrl
+    ? `<img class="fruit-banner-img" src="${escapeHtml(imgUrl)}" alt="${escapeHtml(fruitName)}"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+       <span class="fruit-banner-emoji" style="display:none">${getFruitEmoji(fruitName)}</span>`
+    : `<span class="fruit-banner-emoji">${getFruitEmoji(fruitName)}</span>`;
+  return `<div class="fruit-banner ${rarity}">
+    ${inner}
+    <span class="fruit-banner-label">${escapeHtml(fruitName.toUpperCase())}</span>
+  </div>`;
+}
+
+// Render ảnh nhỏ cho từng trái trong kho
+function renderInvFruitItem(name) {
+  const clean = name.trim().replace(/,+$/, '').trim();
+  if (!clean) return '';
+  const data = getFruitData(clean);
+  const imgUrl = data?.img || '';
+  const shortName = clean.replace(/fruit/i,'').trim().toUpperCase();
+  const inner = imgUrl
+    ? `<img src="${escapeHtml(imgUrl)}" alt="${escapeHtml(clean)}"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+       <span class="inv-emoji" style="display:none">${getFruitEmoji(clean)}</span>`
+    : `<span class="inv-emoji">${getFruitEmoji(clean)}</span>`;
+  return `<div class="inv-item" title="${escapeHtml(clean)}">
+    ${inner}
+    <span class="inv-name">${escapeHtml(shortName)}</span>
+  </div>`;
+}
+
+// Render phần kho trái (inventory)
+function renderInvGrid(invStr) {
+  if (!invStr || invStr.trim() === '') {
+    return '<span class="inv-empty">Không có</span>';
+  }
+  // Tách theo dấu phẩy hoặc xuống dòng
+  const fruits = invStr.split(/[\n,]+/).map(s => s.trim()).filter(Boolean);
+  if (!fruits.length) return '<span class="inv-empty">Không có</span>';
+  return `<div class="inv-grid">${fruits.map(renderInvFruitItem).join('')}</div>`;
 }
 
 function timeAgo(dateStr) {
@@ -299,17 +299,11 @@ function timeAgo(dateStr) {
   return Math.floor(diff/86400) + 'd trước';
 }
 
-function formatInvFruits(inv) {
-  if (!inv || inv.trim() === '') return 'Không có';
-  return inv.split('\n').filter(s => s.trim()).join(', ');
-}
-
 function renderCard(player, index) {
-  const fruit    = (player.fruit || 'None').trim();
-  const level    = player.level || 0;
-  const race     = escapeHtml((player.race || 'Unknown').trim());
-  const invFruits= escapeHtml(formatInvFruits(player.inventory_fruits || ''));
-  const updated  = player.last_seen || player.updated_at;
+  const fruit   = (player.fruit || 'None').trim();
+  const level   = player.level || 0;
+  const race    = escapeHtml((player.race || 'Unknown').trim());
+  const updated = player.last_seen || player.updated_at;
 
   return `
     <div class="player-card" style="animation-delay:${index * 0.05}s">
@@ -331,21 +325,20 @@ function renderCard(player, index) {
             <div class="stat-icon">🍎</div>
             <div class="stat-info">
               <div class="stat-label">Trái đang dùng</div>
-              <div class="stat-value fruit">${escapeHtml(fruit)}</div>
+              <div class="stat-value fruit-text">${escapeHtml(fruit)}</div>
             </div>
           </div>
           <div class="stat-row">
             <div class="stat-icon">🎒</div>
             <div class="stat-info">
               <div class="stat-label">Kho trái</div>
-              <div class="stat-value inv">${invFruits}</div>
+              ${renderInvGrid(player.inventory_fruits || '')}
             </div>
           </div>
         </div>
         <div class="updated-time">CẬP NHẬT ${timeAgo(updated)}</div>
       </div>
-    </div>
-  `;
+    </div>`;
 }
 
 async function fetchPlayers() {
@@ -356,16 +349,13 @@ async function fetchPlayers() {
     const data = await res.json();
     const grid = document.getElementById('players-grid');
     const summary = document.getElementById('summary');
-
     if (!data || data.length === 0) {
       grid.innerHTML = '<div class="empty-state"><div class="icon">📡</div><p>CHƯA CÓ DỮ LIỆU</p></div>';
       return;
     }
-
     document.getElementById('total-count').textContent = data.length;
     summary.style.display = 'flex';
     grid.innerHTML = data.map((p, i) => renderCard(p, i)).join('');
-
     const nowVN = new Date(Date.now() + 7 * 3600 * 1000);
     document.getElementById('last-update').textContent =
       'CẬP NHẬT LÚC ' + nowVN.toISOString().slice(11,19) + ' (ICT)';
