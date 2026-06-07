@@ -24,12 +24,22 @@ app = FastAPI()
 async def health():
     return {"status": "alive"}
 
+def parse_list(val: str) -> list[str]:
+    """Tách theo dòng và dấu phẩy, bỏ item rỗng"""
+    items = []
+    for line in val.splitlines():
+        for part in line.split(","):
+            clean = part.strip().strip("`").strip()
+            if clean:
+                items.append(clean)
+    return items
+
 @app.post("/webhook")
 async def webhook(request: Request):
     data = await request.json()
     try:
         embeds = data.get("embeds", [{}])
-        desc = embeds[0].get("description", "")
+        desc   = embeds[0].get("description", "")
         fields = embeds[0].get("fields", [])
 
         u  = re.search(r'Username\s*:\s*([^\s,\n]+)', desc)
@@ -43,23 +53,22 @@ async def webhook(request: Request):
         fruit    = fr.group(1).strip() if fr else "None"
 
         inv_fruit = ""
-        melee_raw = ""
+        melee     = ""
         inventory = ""
 
         for f in fields:
             name = f.get("name", "")
             val  = f.get("value", "").strip().strip("`").strip()
+
             if "Inventory Fruit" in name:
                 inv_fruit = val
             elif "Melee" in name:
-                melee_raw = val
+                # Lưu TẤT CẢ melee, join bằng dấu phẩy
+                parts = parse_list(val)
+                melee = ", ".join(parts)
             elif "Inventory" in name:
-                inventory = val
-
-        # Melee: lấy cái cuối cùng sau dấu phẩy
-        # Vd: "Dragon Talon, God Human" → "God Human"
-        melee_parts = [m.strip() for m in melee_raw.split(",") if m.strip()]
-        melee = melee_parts[-1] if melee_parts else ""
+                parts = parse_list(val)
+                inventory = ", ".join(parts)
 
         now = datetime.now(timezone.utc).isoformat()
 
@@ -70,7 +79,7 @@ async def webhook(request: Request):
             "fruit":            fruit,
             "inventory_fruits": inv_fruit,
             "melee":            melee,
-            "inventory":        inventory,  # hiển thị hết vũ khí
+            "inventory":        inventory,
             "status":           "online",
             "updated_at":       now,
             "last_seen":        now,
