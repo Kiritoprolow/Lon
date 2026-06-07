@@ -110,15 +110,15 @@
   .inv-item {
     display: flex; flex-direction: column; align-items: center; gap: 3px;
     background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 8px; padding: 6px 5px; width: 56px;
+    border-radius: 8px; padding: 6px 5px; width: 60px; max-width: 60px;
     transition: border-color 0.2s, background 0.2s;
   }
   .inv-item:hover { background: rgba(0,212,255,0.08); border-color: rgba(0,212,255,0.3); }
   .inv-item img { width: 36px; height: 36px; object-fit: contain; filter: drop-shadow(0 0 5px rgba(0,212,255,0.25)); }
   .inv-item .inv-emoji { font-size: 26px; line-height: 1; }
   .inv-item .inv-name {
-    font-family: 'Orbitron', monospace; font-size: 7px; color: var(--muted);
-    letter-spacing: 0.3px; text-align: center; line-height: 1.2; word-break: break-word;
+    font-family: 'Orbitron', monospace; font-size: 6px; color: var(--muted);
+    letter-spacing: 0px; text-align: center; line-height: 1.2; word-break: break-all;
   }
   .inv-empty { font-size: 12px; color: var(--muted); margin-top: 4px; }
 
@@ -190,6 +190,51 @@ const FRUIT_MAP = {
   'love':      { img: BASE + 'Love_Fruit.webp',      rarity: 'rare' },
   'blizzard':  { img: BASE + 'Blizzard_Fruit.webp',  rarity: 'rare' },
 };
+
+const MELEE_MAP = {
+  'death step':      BASE + 'Death_Step.webp',
+  'dragon talon':    BASE + 'Dragon_Talon.webp',
+  'electric claw':   BASE + 'Electric_Claw.webp',
+  'godhuman':        BASE + 'Godhuman.webp',
+  'god human':       BASE + 'Godhuman.webp',
+  'sanguine art':    BASE + 'Sanguine_Art.webp',
+  'sharkman karate': BASE + 'Sharkman_Karate.webp',
+  'superhuman':      BASE + 'Superhuman.webp',
+};
+
+function getMeleeImg(name) {
+  const lower = (name || '').toLowerCase();
+  for (const [key, url] of Object.entries(MELEE_MAP)) {
+    if (lower.includes(key)) return url;
+  }
+  return '';
+}
+
+function getMeleeEmoji(name) {
+  const f = (name || '').toLowerCase();
+  if (f.includes('god'))      return '🥊';
+  if (f.includes('death'))    return '🔥';
+  if (f.includes('dragon'))   return '🐉';
+  if (f.includes('electric')) return '⚡';
+  if (f.includes('shark'))    return '🦈';
+  if (f.includes('super'))    return '👊';
+  if (f.includes('sanguine')) return '🌹';
+  return '👊';
+}
+
+function renderMeleeGrid(meleeStr) {
+  if (!meleeStr || meleeStr.trim() === '') return '<span class="inv-empty">Không có</span>';
+  const items = meleeStr.split(',').map(s => s.trim()).filter(Boolean);
+  if (!items.length) return '<span class="inv-empty">Không có</span>';
+  return '<div class="inv-grid">' + items.map(name => {
+    const imgUrl = getMeleeImg(name);
+    const shortName = name.toUpperCase();
+    const inner = imgUrl
+      ? `<img src="${escapeHtml(imgUrl)}" alt="${escapeHtml(name)}" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span class="inv-emoji" style="display:none">${getMeleeEmoji(name)}</span>`
+      : `<span class="inv-emoji">${getMeleeEmoji(name)}</span>`;
+    return `<div class="inv-item" title="${escapeHtml(name)}">${inner}<span class="inv-name">${escapeHtml(shortName)}</span></div>`;
+  }).join('') + '</div>';
+}
 
 function escapeHtml(str) {
   return String(str)
@@ -336,7 +381,7 @@ function renderCard(player, index) {
             <div class="stat-icon">👊</div>
             <div class="stat-info">
               <div class="stat-label">Melee</div>
-              <div class="stat-value">${escapeHtml(player.melee)}</div>
+              ${renderMeleeGrid(player.melee)}
             </div>
           </div>` : ""}
           ${player.inventory ? `<div class="stat-row">
@@ -358,25 +403,4 @@ async function fetchPlayers() {
       headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
     });
     const data = await res.json();
-    const grid = document.getElementById('players-grid');
-    const summary = document.getElementById('summary');
-    if (!data || data.length === 0) {
-      grid.innerHTML = '<div class="empty-state"><div class="icon">📡</div><p>CHƯA CÓ DỮ LIỆU</p></div>';
-      return;
-    }
-    document.getElementById('total-count').textContent = data.length;
-    summary.style.display = 'flex';
-    grid.innerHTML = data.map((p, i) => renderCard(p, i)).join('');
-    const nowVN = new Date(Date.now() + 7 * 3600 * 1000);
-    document.getElementById('last-update').textContent =
-      'CẬP NHẬT LÚC ' + nowVN.toISOString().slice(11,19) + ' (ICT)';
-  } catch(e) {
-    document.getElementById('players-grid').innerHTML = '<div class="loading">LỖI KẾT NỐI</div>';
-  }
-}
-
-fetchPlayers();
-setInterval(fetchPlayers, 30000);
-</script>
-</body>
-</html>
+    co
