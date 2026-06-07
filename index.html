@@ -6,129 +6,80 @@
 <title>Blox Fruit Tracker</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #050810; --panel: #0a0f1e; --border: #1a2a4a;
-    --accent: #00d4ff; --accent2: #ff6b00; --text: #c8d8f0; --muted: #4a6080;
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: var(--bg); color: var(--text); font-family: 'Rajdhani', sans-serif; min-height: 100vh; overflow-x: hidden; }
-  body::before {
-    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
-    background: radial-gradient(ellipse at 20% 20%, rgba(0,212,255,0.06) 0%, transparent 60%),
-                radial-gradient(ellipse at 80% 80%, rgba(255,107,0,0.05) 0%, transparent 60%);
-  }
-  .grid-bg {
-    position: fixed; inset: 0; pointer-events: none; z-index: 0;
-    background-image: linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
-                      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-  }
-  .container { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 20px 16px; }
-  header { text-align: center; margin-bottom: 32px; padding: 24px 0; }
-  .logo {
-    font-family: 'Orbitron', monospace; font-size: clamp(22px, 5vw, 36px);
-    font-weight: 900; letter-spacing: 4px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  }
-  .logo::after {
-    content: 'FRUIT TRACKER'; display: block; font-size: clamp(10px, 2vw, 13px);
-    letter-spacing: 8px; color: var(--muted); -webkit-text-fill-color: var(--muted); margin-top: 4px;
-  }
-  .refresh-bar { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 16px; font-size: 13px; color: var(--muted); font-family: 'Orbitron', monospace; letter-spacing: 1px; }
-  .refresh-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
-  @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.8); } }
-  .summary-bar { display: flex; gap: 16px; margin-bottom: 24px; }
-  .summary-item { flex: 1; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; text-align: center; }
-  .summary-num { font-family: 'Orbitron', monospace; font-size: 28px; font-weight: 900; line-height: 1; color: var(--accent); }
-  .summary-label { font-size: 11px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; font-family: 'Orbitron', monospace; }
-  .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-bottom: 24px; }
-
-  /* PLAYER CARD */
-  .player-card {
-    background: var(--panel); border: 1px solid var(--border); border-radius: 14px;
-    overflow: hidden; position: relative;
-    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
-    animation: fadeIn 0.4s ease both;
-  }
-  .player-card:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: 0 8px 32px rgba(0,212,255,0.12); }
-  .player-card::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-    background: linear-gradient(90deg, transparent, var(--accent), transparent); opacity: 0.7;
-  }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-
-  /* FRUIT BANNER */
-  .fruit-banner {
-    position: relative; height: 110px;
-    background: linear-gradient(135deg, #0d1628 0%, #111c35 100%);
-    display: flex; align-items: center; justify-content: center; overflow: hidden;
-  }
-  .fruit-banner::after {
-    content: ''; position: absolute; inset: 0;
-    background: radial-gradient(ellipse at center, rgba(0,212,255,0.08) 0%, transparent 70%);
-  }
-  .fruit-banner-img {
-    width: 88px; height: 88px; object-fit: contain; position: relative; z-index: 1;
-    filter: drop-shadow(0 0 14px rgba(0,212,255,0.35));
-    transition: transform 0.3s ease, filter 0.3s ease;
-  }
-  .player-card:hover .fruit-banner-img { transform: scale(1.08); filter: drop-shadow(0 0 22px rgba(0,212,255,0.55)); }
-  .fruit-banner-emoji { font-size: 56px; position: relative; z-index: 1; transition: transform 0.3s ease; line-height: 1; }
-  .player-card:hover .fruit-banner-emoji { transform: scale(1.1); }
-  .fruit-banner-label {
-    position: absolute; bottom: 8px; right: 10px; z-index: 2;
-    font-family: 'Orbitron', monospace; font-size: 9px; letter-spacing: 1.5px; color: var(--accent); opacity: 0.7;
-  }
-  .fruit-banner.mythical::after { background: radial-gradient(ellipse at center, rgba(255,107,0,0.14) 0%, transparent 70%); }
-  .fruit-banner.mythical .fruit-banner-img { filter: drop-shadow(0 0 16px rgba(255,107,0,0.5)); }
-  .fruit-banner.legendary::after { background: radial-gradient(ellipse at center, rgba(255,200,0,0.13) 0%, transparent 70%); }
-  .fruit-banner.legendary .fruit-banner-img { filter: drop-shadow(0 0 16px rgba(255,200,0,0.45)); }
-  .fruit-banner.rare::after { background: radial-gradient(ellipse at center, rgba(180,80,255,0.13) 0%, transparent 70%); }
-  .fruit-banner.rare .fruit-banner-img { filter: drop-shadow(0 0 16px rgba(180,80,255,0.45)); }
-
-  /* CARD BODY */
-  .card-body-wrap { padding: 16px 18px 14px; }
-  .card-header { margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; }
-  .username { font-family: 'Orbitron', monospace; font-size: 13px; font-weight: 700; letter-spacing: 1px; color: #fff; }
-  .level-badge {
-    font-family: 'Orbitron', monospace; font-size: 11px; font-weight: 700;
-    background: rgba(0,212,255,0.12); border: 1px solid rgba(0,212,255,0.3);
-    color: var(--accent); padding: 3px 8px; border-radius: 20px; letter-spacing: 1px;
-  }
-  .card-stats { display: flex; flex-direction: column; gap: 7px; }
-  .stat-row { display: flex; align-items: flex-start; gap: 10px; padding: 8px 12px; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid rgba(255,255,255,0.04); }
-  .stat-icon { font-size: 15px; width: 22px; text-align: center; margin-top: 2px; }
-  .stat-info { flex: 1; }
-  .stat-label { font-size: 10px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; font-family: 'Orbitron', monospace; }
-  .stat-value { font-size: 14px; font-weight: 600; color: var(--text); margin-top: 1px; }
-  .stat-value.fruit-text { color: var(--accent2); }
-  .updated-time { font-size: 10px; color: var(--muted); font-family: 'Orbitron', monospace; letter-spacing: 1px; margin-top: 10px; text-align: right; }
-
-  /* KHO TRÁI - ảnh nhỏ */
-  .inv-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
-  .inv-item {
-    display: flex; flex-direction: column; align-items: center; gap: 3px;
-    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 8px; padding: 6px 5px; width: 60px; max-width: 60px;
-    transition: border-color 0.2s, background 0.2s;
-  }
-  .inv-item:hover { background: rgba(0,212,255,0.08); border-color: rgba(0,212,255,0.3); }
-  .inv-item img { width: 36px; height: 36px; object-fit: contain; filter: drop-shadow(0 0 5px rgba(0,212,255,0.25)); }
-  .inv-item .inv-emoji { font-size: 26px; line-height: 1; }
-  .inv-item .inv-name {
-    font-family: 'Orbitron', monospace; font-size: 6px; color: var(--muted);
-    letter-spacing: 0px; text-align: center; line-height: 1.2; word-break: break-all;
-  }
-  .inv-empty { font-size: 12px; color: var(--muted); margin-top: 4px; }
-
-  /* MISC */
-  .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); grid-column: 1/-1; }
-  .empty-state .icon { font-size: 48px; margin-bottom: 16px; opacity: 0.5; }
-  .empty-state p { font-family: 'Orbitron', monospace; font-size: 13px; letter-spacing: 2px; }
-  .loading { text-align: center; padding: 40px; font-family: 'Orbitron', monospace; color: var(--accent); letter-spacing: 3px; font-size: 13px; animation: blink 1s infinite; }
-  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-  footer { text-align: center; padding: 24px 0; color: var(--muted); font-size: 11px; font-family: 'Orbitron', monospace; letter-spacing: 2px; border-top: 1px solid var(--border); margin-top: 16px; }
+  :root { --bg:#050810;--panel:#0a0f1e;--border:#1a2a4a;--accent:#00d4ff;--accent2:#ff6b00;--text:#c8d8f0;--muted:#4a6080; }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;min-height:100vh;overflow-x:hidden;}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:radial-gradient(ellipse at 20% 20%,rgba(0,212,255,0.06) 0%,transparent 60%),
+               radial-gradient(ellipse at 80% 80%,rgba(255,107,0,0.05) 0%,transparent 60%);}
+  .grid-bg{position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:linear-gradient(rgba(0,212,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.03) 1px,transparent 1px);
+    background-size:40px 40px;}
+  .container{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:20px 16px;}
+  header{text-align:center;margin-bottom:32px;padding:24px 0;}
+  .logo{font-family:'Orbitron',monospace;font-size:clamp(22px,5vw,36px);font-weight:900;letter-spacing:4px;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .logo::after{content:'FRUIT TRACKER';display:block;font-size:clamp(10px,2vw,13px);letter-spacing:8px;color:var(--muted);-webkit-text-fill-color:var(--muted);margin-top:4px;}
+  .refresh-bar{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:16px;font-size:13px;color:var(--muted);font-family:'Orbitron',monospace;letter-spacing:1px;}
+  .refresh-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.4;transform:scale(0.8);}}
+  .summary-bar{display:flex;gap:16px;margin-bottom:24px;}
+  .summary-item{flex:1;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px 18px;text-align:center;}
+  .summary-num{font-family:'Orbitron',monospace;font-size:28px;font-weight:900;line-height:1;color:var(--accent);}
+  .summary-label{font-size:11px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:4px;font-family:'Orbitron',monospace;}
+  .stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-bottom:24px;}
+  .player-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;overflow:hidden;position:relative;
+    transition:transform 0.2s,border-color 0.2s,box-shadow 0.2s;animation:fadeIn 0.4s ease both;}
+  .player-card:hover{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 8px 32px rgba(0,212,255,0.12);}
+  .player-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+    background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0.7;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+  .fruit-banner{position:relative;height:110px;background:linear-gradient(135deg,#0d1628 0%,#111c35 100%);
+    display:flex;align-items:center;justify-content:center;overflow:hidden;}
+  .fruit-banner::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(0,212,255,0.08) 0%,transparent 70%);}
+  .fruit-banner-img{width:88px;height:88px;object-fit:contain;position:relative;z-index:1;
+    filter:drop-shadow(0 0 14px rgba(0,212,255,0.35));transition:transform 0.3s ease,filter 0.3s ease;}
+  .player-card:hover .fruit-banner-img{transform:scale(1.08);filter:drop-shadow(0 0 22px rgba(0,212,255,0.55));}
+  .fruit-banner-emoji{font-size:56px;position:relative;z-index:1;transition:transform 0.3s ease;line-height:1;}
+  .player-card:hover .fruit-banner-emoji{transform:scale(1.1);}
+  .fruit-banner-label{position:absolute;bottom:8px;right:10px;z-index:2;font-family:'Orbitron',monospace;font-size:9px;letter-spacing:1.5px;color:var(--accent);opacity:0.7;}
+  .fruit-banner.mythical::after{background:radial-gradient(ellipse at center,rgba(255,107,0,0.14) 0%,transparent 70%);}
+  .fruit-banner.mythical .fruit-banner-img{filter:drop-shadow(0 0 16px rgba(255,107,0,0.5));}
+  .fruit-banner.legendary::after{background:radial-gradient(ellipse at center,rgba(255,200,0,0.13) 0%,transparent 70%);}
+  .fruit-banner.legendary .fruit-banner-img{filter:drop-shadow(0 0 16px rgba(255,200,0,0.45));}
+  .fruit-banner.rare::after{background:radial-gradient(ellipse at center,rgba(180,80,255,0.13) 0%,transparent 70%);}
+  .fruit-banner.rare .fruit-banner-img{filter:drop-shadow(0 0 16px rgba(180,80,255,0.45));}
+  .card-body-wrap{padding:16px 18px 14px;}
+  .card-header{margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;}
+  .username{font-family:'Orbitron',monospace;font-size:13px;font-weight:700;letter-spacing:1px;color:#fff;}
+  .level-badge{font-family:'Orbitron',monospace;font-size:11px;font-weight:700;
+    background:rgba(0,212,255,0.12);border:1px solid rgba(0,212,255,0.3);
+    color:var(--accent);padding:3px 8px;border-radius:20px;letter-spacing:1px;}
+  .card-stats{display:flex;flex-direction:column;gap:7px;}
+  .stat-row{display:flex;align-items:flex-start;gap:10px;padding:8px 12px;background:rgba(255,255,255,0.03);border-radius:8px;border:1px solid rgba(255,255,255,0.04);}
+  .stat-icon{font-size:15px;width:22px;text-align:center;margin-top:2px;}
+  .stat-info{flex:1;}
+  .stat-label{font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;font-family:'Orbitron',monospace;}
+  .stat-value{font-size:14px;font-weight:600;color:var(--text);margin-top:1px;}
+  .stat-value.fruit-text{color:var(--accent2);}
+  .updated-time{font-size:10px;color:var(--muted);font-family:'Orbitron',monospace;letter-spacing:1px;margin-top:10px;text-align:right;}
+  .inv-grid{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
+  .inv-item{display:flex;flex-direction:column;align-items:center;gap:3px;
+    background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);
+    border-radius:8px;padding:6px 5px;width:62px;
+    transition:border-color 0.2s,background 0.2s;}
+  .inv-item:hover{background:rgba(0,212,255,0.08);border-color:rgba(0,212,255,0.3);}
+  .inv-item img{width:36px;height:36px;object-fit:contain;filter:drop-shadow(0 0 5px rgba(0,212,255,0.25));}
+  .inv-item .inv-emoji{font-size:26px;line-height:1;}
+  .inv-item .inv-name{font-family:'Orbitron',monospace;font-size:6px;color:var(--muted);
+    letter-spacing:0px;text-align:center;line-height:1.2;word-break:break-all;max-width:62px;}
+  .inv-empty{font-size:12px;color:var(--muted);margin-top:4px;}
+  .empty-state{text-align:center;padding:60px 20px;color:var(--muted);grid-column:1/-1;}
+  .empty-state .icon{font-size:48px;margin-bottom:16px;opacity:0.5;}
+  .empty-state p{font-family:'Orbitron',monospace;font-size:13px;letter-spacing:2px;}
+  .loading{text-align:center;padding:40px;font-family:'Orbitron',monospace;color:var(--accent);letter-spacing:3px;font-size:13px;animation:blink 1s infinite;}
+  @keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
+  footer{text-align:center;padding:24px 0;color:var(--muted);font-size:11px;font-family:'Orbitron',monospace;letter-spacing:2px;border-top:1px solid var(--border);margin-top:16px;}
 </style>
 </head>
 <body>
@@ -136,271 +87,240 @@
 <div class="container">
   <header>
     <div class="logo">BLOX FRUIT</div>
-    <div class="refresh-bar">
-      <div class="refresh-dot"></div>
-      <span id="last-update">ĐANG TẢI...</span>
-    </div>
+    <div class="refresh-bar"><div class="refresh-dot"></div><span id="last-update">ĐANG TẢI...</span></div>
   </header>
   <div class="summary-bar" id="summary" style="display:none">
-    <div class="summary-item">
-      <div class="summary-num" id="total-count">0</div>
-      <div class="summary-label">Tổng tài khoản</div>
-    </div>
+    <div class="summary-item"><div class="summary-num" id="total-count">0</div><div class="summary-label">Tổng tài khoản</div></div>
   </div>
-  <div id="players-grid" class="stats-grid">
-    <div class="loading">ĐANG KẾT NỐI...</div>
-  </div>
+  <div id="players-grid" class="stats-grid"><div class="loading">ĐANG KẾT NỐI...</div></div>
   <footer>BLOX FRUIT TRACKER &nbsp;•&nbsp; AUTO REFRESH 30S</footer>
 </div>
 <script>
-const SUPABASE_URL = 'https://tlvxpsqefouumvfdihbs.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRsdnhwc3FlZm91dW12ZmRpaGJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxODc1MDYsImV4cCI6MjA5NTc2MzUwNn0.2oYQQ2dOzH9i0W7wfYmJaostwqJj1MZCQl_ruG-HTUs';
+var SUPABASE_URL = 'https://tlvxpsqefouumvfdihbs.supabase.co';
+var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRsdnhwc3FlZm91dW12ZmRpaGJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxODc1MDYsImV4cCI6MjA5NTc2MzUwNn0.2oYQQ2dOzH9i0W7wfYmJaostwqJj1MZCQl_ruG-HTUs';
+var BASE = 'https://raw.githubusercontent.com/Kiritoprolow/Lon/0afe632/';
 
-const BASE = 'https://raw.githubusercontent.com/Kiritoprolow/Lon/0afe632/';
-
-// KEY phải khớp với tên fruit trong DB (viết thường, không dấu)
-const FRUIT_MAP = {
-  // MYTHICAL
-  'dragon':    { img: BASE + 'Dragon_Fruit.webp',    rarity: 'mythical' },
-  'kitsune':   { img: BASE + 'Kitsune_Fruit.webp',   rarity: 'mythical' },
-  'spirit':    { img: BASE + 'Spirit_Fruit.webp',    rarity: 'mythical' },
-  'yeti':      { img: BASE + 'Yeti_Fruit.webp',      rarity: 'mythical' },
-  't-rex':     { img: BASE + 'T-Rex_Fruit.webp',     rarity: 'mythical' },
-  'trex':      { img: BASE + 'T-Rex_Fruit.webp',     rarity: 'mythical' },
-  // LEGENDARY
-  'buddha':    { img: BASE + 'Buddha_Fruit.webp',    rarity: 'legendary' },
-  'dough':     { img: BASE + 'Dough_Fruit.webp',     rarity: 'legendary' },
-  'phoenix':   { img: BASE + 'Phoenix_Fruit.webp',   rarity: 'legendary' },
-  'sound':     { img: BASE + 'Sound_Fruit.webp',     rarity: 'legendary' },
-  'shadow':    { img: BASE + 'Shadow_Fruit.webp',    rarity: 'legendary' },
-  'pain':      { img: BASE + 'Pain_Fruit.webp',      rarity: 'legendary' },
-  'quake':     { img: BASE + 'Quake_Fruit.webp',     rarity: 'legendary' },
-  'creation':  { img: BASE + 'Creation_Fruit.webp',  rarity: 'legendary' },
-  'venom':     { img: BASE + 'Venom_Fruit.webp',     rarity: 'legendary' },
-  'mammoth':   { img: BASE + 'Mammoth_Fruit.webp',   rarity: 'legendary' },
-  'lightning': { img: BASE + 'Lightning_Fruit.webp', rarity: 'legendary' },
-  'light':     { img: BASE + 'Lightning_Fruit.webp', rarity: 'legendary' },
-  'portal':    { img: BASE + 'Portal_Fruit.webp',    rarity: 'legendary' },
-  'control':   { img: BASE + 'Control_Fruit.webp',   rarity: 'legendary' },
-  // RARE
-  'gravity':   { img: BASE + 'Gravity_Fruit.webp',   rarity: 'rare' },
-  'gas':       { img: BASE + 'Gas_Fruit.webp',       rarity: 'rare' },
-  'spider':    { img: BASE + 'Spider_Fruit.webp',    rarity: 'rare' },
-  'tiger':     { img: BASE + 'Tiger_Fruit.webp',     rarity: 'rare' },
-  'love':      { img: BASE + 'Love_Fruit.webp',      rarity: 'rare' },
-  'blizzard':  { img: BASE + 'Blizzard_Fruit.webp',  rarity: 'rare' },
+var FRUIT_MAP = {
+  'dragon':    {img:BASE+'Dragon_Fruit.webp',    rarity:'mythical'},
+  'kitsune':   {img:BASE+'Kitsune_Fruit.webp',   rarity:'mythical'},
+  'spirit':    {img:BASE+'Spirit_Fruit.webp',    rarity:'mythical'},
+  'yeti':      {img:BASE+'Yeti_Fruit.webp',      rarity:'mythical'},
+  't-rex':     {img:BASE+'T-Rex_Fruit.webp',     rarity:'mythical'},
+  'trex':      {img:BASE+'T-Rex_Fruit.webp',     rarity:'mythical'},
+  'buddha':    {img:BASE+'Buddha_Fruit.webp',    rarity:'legendary'},
+  'dough':     {img:BASE+'Dough_Fruit.webp',     rarity:'legendary'},
+  'phoenix':   {img:BASE+'Phoenix_Fruit.webp',   rarity:'legendary'},
+  'sound':     {img:BASE+'Sound_Fruit.webp',     rarity:'legendary'},
+  'shadow':    {img:BASE+'Shadow_Fruit.webp',    rarity:'legendary'},
+  'pain':      {img:BASE+'Pain_Fruit.webp',      rarity:'legendary'},
+  'quake':     {img:BASE+'Quake_Fruit.webp',     rarity:'legendary'},
+  'creation':  {img:BASE+'Creation_Fruit.webp',  rarity:'legendary'},
+  'venom':     {img:BASE+'Venom_Fruit.webp',     rarity:'legendary'},
+  'mammoth':   {img:BASE+'Mammoth_Fruit.webp',   rarity:'legendary'},
+  'lightning': {img:BASE+'Lightning_Fruit.webp', rarity:'legendary'},
+  'light':     {img:BASE+'Lightning_Fruit.webp', rarity:'legendary'},
+  'portal':    {img:BASE+'Portal_Fruit.webp',    rarity:'legendary'},
+  'control':   {img:BASE+'Control_Fruit.webp',   rarity:'legendary'},
+  'gravity':   {img:BASE+'Gravity_Fruit.webp',   rarity:'rare'},
+  'gas':       {img:BASE+'Gas_Fruit.webp',       rarity:'rare'},
+  'spider':    {img:BASE+'Spider_Fruit.webp',    rarity:'rare'},
+  'tiger':     {img:BASE+'Tiger_Fruit.webp',     rarity:'rare'},
+  'love':      {img:BASE+'Love_Fruit.webp',      rarity:'rare'},
+  'blizzard':  {img:BASE+'Blizzard_Fruit.webp',  rarity:'rare'},
 };
 
-const MELEE_MAP = {
-  'death step':      BASE + 'Death_Step.webp',
-  'dragon talon':    BASE + 'Dragon_Talon.webp',
-  'electric claw':   BASE + 'Electric_Claw.webp',
-  'godhuman':        BASE + 'Godhuman.webp',
-  'god human':       BASE + 'Godhuman.webp',
-  'sanguine art':    BASE + 'Sanguine_Art.webp',
-  'sharkman karate': BASE + 'Sharkman_Karate.webp',
-  'superhuman':      BASE + 'Superhuman.webp',
+var MELEE_MAP = {
+  'death step':      BASE+'Death_Step.webp',
+  'dragon talon':    BASE+'Dragon_Talon.webp',
+  'electric claw':   BASE+'Electric_Claw.webp',
+  'godhuman':        BASE+'Godhuman.webp',
+  'god human':       BASE+'Godhuman.webp',
+  'sanguine art':    BASE+'Sanguine_Art.webp',
+  'sharkman karate': BASE+'Sharkman_Karate.webp',
+  'superhuman':      BASE+'Superhuman.webp',
 };
 
-function getMeleeImg(name) {
-  const lower = (name || '').toLowerCase();
-  for (const [key, url] of Object.entries(MELEE_MAP)) {
-    if (lower.includes(key)) return url;
-  }
-  return '';
-}
-
-function getMeleeEmoji(name) {
-  const f = (name || '').toLowerCase();
-  if (f.includes('god'))      return '🥊';
-  if (f.includes('death'))    return '🔥';
-  if (f.includes('dragon'))   return '🐉';
-  if (f.includes('electric')) return '⚡';
-  if (f.includes('shark'))    return '🦈';
-  if (f.includes('super'))    return '👊';
-  if (f.includes('sanguine')) return '🌹';
-  return '👊';
-}
-
-function renderMeleeGrid(meleeStr) {
-  if (!meleeStr || meleeStr.trim() === '') return '<span class="inv-empty">Không có</span>';
-  const items = meleeStr.split(',').map(s => s.trim()).filter(Boolean);
-  if (!items.length) return '<span class="inv-empty">Không có</span>';
-  return '<div class="inv-grid">' + items.map(name => {
-    const imgUrl = getMeleeImg(name);
-    const shortName = name.toUpperCase();
-    const inner = imgUrl
-      ? `<img src="${escapeHtml(imgUrl)}" alt="${escapeHtml(name)}" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span class="inv-emoji" style="display:none">${getMeleeEmoji(name)}</span>`
-      : `<span class="inv-emoji">${getMeleeEmoji(name)}</span>`;
-    return `<div class="inv-item" title="${escapeHtml(name)}">${inner}<span class="inv-name">${escapeHtml(shortName)}</span></div>`;
-  }).join('') + '</div>';
-}
-
-function escapeHtml(str) {
-  return String(str)
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;').replace(/"/g,'&quot;')
-    .replace(/'/g,'&#39;');
+function escapeHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
 function getFruitData(name) {
-  if (!name || name.toLowerCase() === 'none') return null;
-  const lower = name.toLowerCase();
-  for (const [key, val] of Object.entries(FRUIT_MAP)) {
-    if (lower.includes(key)) return { key, ...val };
-  }
+  if (!name || name.toLowerCase()==='none') return null;
+  var lower = name.toLowerCase();
+  for (var k in FRUIT_MAP) { if (lower.indexOf(k)>=0) return {key:k,img:FRUIT_MAP[k].img,rarity:FRUIT_MAP[k].rarity}; }
   return null;
 }
 
 function getFruitEmoji(name) {
-  const f = (name || '').toLowerCase();
-  if (f.includes('dragon'))    return '🐉';
-  if (f.includes('kitsune'))   return '🦊';
-  if (f.includes('spirit'))    return '👻';
-  if (f.includes('yeti'))      return '⛄';
-  if (f.includes('t-rex') || f.includes('trex')) return '🦖';
-  if (f.includes('buddha'))    return '☯️';
-  if (f.includes('dough'))     return '🫓';
-  if (f.includes('phoenix'))   return '🔥';
-  if (f.includes('sound'))     return '🔊';
-  if (f.includes('shadow'))    return '👤';
-  if (f.includes('pain'))      return '💀';
-  if (f.includes('quake'))     return '💥';
-  if (f.includes('creation'))  return '✨';
-  if (f.includes('venom'))     return '🐍';
-  if (f.includes('mammoth'))   return '🦣';
-  if (f.includes('lightning') || f.includes('light')) return '⚡';
-  if (f.includes('portal'))    return '🌀';
-  if (f.includes('control'))   return '🎮';
-  if (f.includes('gravity'))   return '🌀';
-  if (f.includes('gas'))       return '☁️';
-  if (f.includes('spider'))    return '🕷️';
-  if (f.includes('tiger'))     return '🐯';
-  if (f.includes('love'))      return '💗';
-  if (f.includes('blizzard'))  return '❄️';
+  var f=(name||'').toLowerCase();
+  if(f.indexOf('dragon')>=0)   return '🐉';
+  if(f.indexOf('kitsune')>=0)  return '🦊';
+  if(f.indexOf('spirit')>=0)   return '👻';
+  if(f.indexOf('yeti')>=0)     return '⛄';
+  if(f.indexOf('t-rex')>=0||f.indexOf('trex')>=0) return '🦖';
+  if(f.indexOf('buddha')>=0)   return '☯️';
+  if(f.indexOf('dough')>=0)    return '🫓';
+  if(f.indexOf('phoenix')>=0)  return '🔥';
+  if(f.indexOf('sound')>=0)    return '🔊';
+  if(f.indexOf('shadow')>=0)   return '👤';
+  if(f.indexOf('pain')>=0)     return '💀';
+  if(f.indexOf('quake')>=0)    return '💥';
+  if(f.indexOf('creation')>=0) return '✨';
+  if(f.indexOf('venom')>=0)    return '🐍';
+  if(f.indexOf('mammoth')>=0)  return '🦣';
+  if(f.indexOf('lightning')>=0||f.indexOf('light')>=0) return '⚡';
+  if(f.indexOf('portal')>=0)   return '🌀';
+  if(f.indexOf('control')>=0)  return '🎮';
+  if(f.indexOf('gravity')>=0)  return '🌀';
+  if(f.indexOf('gas')>=0)      return '☁️';
+  if(f.indexOf('spider')>=0)   return '🕷️';
+  if(f.indexOf('tiger')>=0)    return '🐯';
+  if(f.indexOf('love')>=0)     return '💗';
+  if(f.indexOf('blizzard')>=0) return '❄️';
   return '🍎';
 }
 
-// Render banner ảnh lớn (trái đang dùng)
+function getMeleeImg(name) {
+  var lower=(name||'').toLowerCase();
+  for (var k in MELEE_MAP) { if(lower.indexOf(k)>=0) return MELEE_MAP[k]; }
+  return '';
+}
+
+function getMeleeEmoji(name) {
+  var f=(name||'').toLowerCase();
+  if(f.indexOf('god')>=0)      return '🥊';
+  if(f.indexOf('death')>=0)    return '🔥';
+  if(f.indexOf('dragon')>=0)   return '🐉';
+  if(f.indexOf('electric')>=0) return '⚡';
+  if(f.indexOf('shark')>=0)    return '🦈';
+  if(f.indexOf('super')>=0)    return '👊';
+  if(f.indexOf('sanguine')>=0) return '🌹';
+  return '👊';
+}
+
+function makeItemGrid(items, getImg, getEmoji) {
+  var html = '<div class="inv-grid">';
+  for (var i=0; i<items.length; i++) {
+    var name = items[i];
+    var imgUrl = getImg(name);
+    var shortName = escapeHtml(name.toUpperCase());
+    var nameEsc = escapeHtml(name);
+    var inner = '';
+    if (imgUrl) {
+      inner = '<img src="'+escapeHtml(imgUrl)+'" alt="'+nameEsc+'" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'block\'">'
+            + '<span class="inv-emoji" style="display:none">'+getEmoji(name)+'</span>';
+    } else {
+      inner = '<span class="inv-emoji">'+getEmoji(name)+'</span>';
+    }
+    html += '<div class="inv-item" title="'+nameEsc+'">'+inner+'<span class="inv-name">'+shortName+'</span></div>';
+  }
+  html += '</div>';
+  return html;
+}
+
 function renderFruitBanner(fruitName) {
-  if (!fruitName || fruitName.toLowerCase() === 'none') {
-    return '';
+  if (!fruitName || fruitName.toLowerCase()==='none') return '';
+  var data = getFruitData(fruitName);
+  var rarity = data ? data.rarity : 'common';
+  var imgUrl = data ? data.img : '';
+  var inner = '';
+  if (imgUrl) {
+    inner = '<img class="fruit-banner-img" src="'+escapeHtml(imgUrl)+'" alt="'+escapeHtml(fruitName)+'" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'block\'">'
+          + '<span class="fruit-banner-emoji" style="display:none">'+getFruitEmoji(fruitName)+'</span>';
+  } else {
+    inner = '<span class="fruit-banner-emoji">'+getFruitEmoji(fruitName)+'</span>';
   }
-  const data = getFruitData(fruitName);
-  const rarity = data?.rarity || 'common';
-  const imgUrl = data?.img || '';
-  const inner = imgUrl
-    ? `<img class="fruit-banner-img" src="${escapeHtml(imgUrl)}" alt="${escapeHtml(fruitName)}"
-          onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-       <span class="fruit-banner-emoji" style="display:none">${getFruitEmoji(fruitName)}</span>`
-    : `<span class="fruit-banner-emoji">${getFruitEmoji(fruitName)}</span>`;
-  return `<div class="fruit-banner ${rarity}">
-    ${inner}
-    <span class="fruit-banner-label">${escapeHtml(fruitName.toUpperCase())}</span>
-  </div>`;
+  return '<div class="fruit-banner '+rarity+'">'+inner+'<span class="fruit-banner-label">'+escapeHtml(fruitName.toUpperCase())+'</span></div>';
 }
 
-// Render ảnh nhỏ cho từng trái trong kho
-function renderInvFruitItem(name) {
-  const clean = name.trim().replace(/,+$/, '').trim();
-  if (!clean) return '';
-  const data = getFruitData(clean);
-  const imgUrl = data?.img || '';
-  const shortName = clean.replace(/fruit/i,'').trim().toUpperCase();
-  const inner = imgUrl
-    ? `<img src="${escapeHtml(imgUrl)}" alt="${escapeHtml(clean)}"
-          onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-       <span class="inv-emoji" style="display:none">${getFruitEmoji(clean)}</span>`
-    : `<span class="inv-emoji">${getFruitEmoji(clean)}</span>`;
-  return `<div class="inv-item" title="${escapeHtml(clean)}">
-    ${inner}
-    <span class="inv-name">${escapeHtml(shortName)}</span>
-  </div>`;
+function renderItemGrid(str, getImg, getEmoji) {
+  if (!str || str.trim()==='') return '<span class="inv-empty">Không có</span>';
+  var items = str.split(',').map(function(s){return s.trim();}).filter(Boolean);
+  if (!items.length) return '<span class="inv-empty">Không có</span>';
+  return makeItemGrid(items, getImg, getEmoji);
 }
 
-// Render phần kho trái (inventory)
-function renderInvGrid(invStr) {
-  if (!invStr || invStr.trim() === '') {
-    return '<span class="inv-empty">Không có</span>';
-  }
-  // Tách theo dấu phẩy hoặc xuống dòng
-  const fruits = invStr.split(/[\n,]+/).map(s => s.trim()).filter(Boolean);
-  if (!fruits.length) return '<span class="inv-empty">Không có</span>';
-  return `<div class="inv-grid">${fruits.map(renderInvFruitItem).join('')}</div>`;
+function renderInvFruitGrid(invStr) {
+  if (!invStr || invStr.trim()==='') return '<span class="inv-empty">Không có</span>';
+  var items = invStr.split(/[\n,]+/).map(function(s){return s.trim();}).filter(Boolean);
+  if (!items.length) return '<span class="inv-empty">Không có</span>';
+  return makeItemGrid(items, function(n){
+    var d=getFruitData(n); return d?d.img:'';
+  }, getFruitEmoji);
 }
 
 function timeAgo(dateStr) {
   if (!dateStr) return 'N/A';
-  const clean = dateStr.replace('+00','').replace(' ','T').split('.')[0];
-  const d = new Date(clean + 'Z');
+  var clean = dateStr.replace('+00','').replace(' ','T').split('.')[0];
+  var d = new Date(clean+'Z');
   if (isNaN(d)) return 'N/A';
-  const diff = Math.floor((Date.now() - d.getTime()) / 1000);
-  if (diff < 60) return diff + 's trước';
-  if (diff < 3600) return Math.floor(diff/60) + 'm trước';
-  if (diff < 86400) return Math.floor(diff/3600) + 'h trước';
-  return Math.floor(diff/86400) + 'd trước';
+  var diff = Math.floor((Date.now()-d.getTime())/1000);
+  if (diff<60)    return diff+'s trước';
+  if (diff<3600)  return Math.floor(diff/60)+'m trước';
+  if (diff<86400) return Math.floor(diff/3600)+'h trước';
+  return Math.floor(diff/86400)+'d trước';
 }
 
 function renderCard(player, index) {
-  const fruit   = (player.fruit || 'None').trim();
-  const level   = player.level || 0;
-  const race    = escapeHtml((player.race || 'Unknown').trim());
-  const updated = player.last_seen || player.updated_at;
+  var fruit   = (player.fruit||'None').trim();
+  var level   = player.level||0;
+  var race    = escapeHtml((player.race||'Unknown').trim());
+  var updated = player.last_seen||player.updated_at;
 
-  return `
-    <div class="player-card" style="animation-delay:${index * 0.05}s">
-      ${renderFruitBanner(fruit)}
-      <div class="card-body-wrap">
-        <div class="card-header">
-          <div class="username">${escapeHtml(player.username)}</div>
-          <div class="level-badge">LV ${level}</div>
-        </div>
-        <div class="card-stats">
-          <div class="stat-row">
-            <div class="stat-icon">🧬</div>
-            <div class="stat-info">
-              <div class="stat-label">Race</div>
-              <div class="stat-value">${race}</div>
-            </div>
-          </div>
-          <div class="stat-row">
-            <div class="stat-icon">🍎</div>
-            <div class="stat-info">
-              <div class="stat-label">Trái đang dùng</div>
-              <div class="stat-value fruit-text">${escapeHtml(fruit)}</div>
-            </div>
-          </div>
-          <div class="stat-row">
-            <div class="stat-icon">🎒</div>
-            <div class="stat-info">
-              <div class="stat-label">Kho trái</div>
-              ${renderInvGrid(player.inventory_fruits || "")}
-            </div>
-          </div>
-          ${player.melee ? `<div class="stat-row">
-            <div class="stat-icon">👊</div>
-            <div class="stat-info">
-              <div class="stat-label">Melee</div>
-              ${renderMeleeGrid(player.melee)}
-            </div>
-          </div>` : ""}
-          ${player.inventory ? `<div class="stat-row">
-            <div class="stat-icon">⚔️</div>
-            <div class="stat-info">
-              <div class="stat-label">Vũ khí</div>
-              <div class="stat-value">${escapeHtml(player.inventory)}</div>
-            </div>
-          </div>` : ""}
-        </div>
-        <div class="updated-time">CẬP NHẬT ${timeAgo(updated)}</div>
-      </div>
-    </div>`;
+  var meleeRow = '';
+  if (player.melee && player.melee.trim()) {
+    meleeRow = '<div class="stat-row"><div class="stat-icon">👊</div><div class="stat-info">'
+             + '<div class="stat-label">Melee</div>'
+             + renderItemGrid(player.melee, getMeleeImg, getMeleeEmoji)
+             + '</div></div>';
+  }
+  var invRow = '';
+  if (player.inventory && player.inventory.trim()) {
+    invRow = '<div class="stat-row"><div class="stat-icon">⚔️</div><div class="stat-info">'
+           + '<div class="stat-label">Vũ khí</div>'
+           + '<div class="stat-value">'+escapeHtml(player.inventory)+'</div>'
+           + '</div></div>';
+  }
+
+  return '<div class="player-card" style="animation-delay:'+(index*0.05)+'s">'
+    + renderFruitBanner(fruit)
+    + '<div class="card-body-wrap">'
+    + '<div class="card-header"><div class="username">'+escapeHtml(player.username)+'</div><div class="level-badge">LV '+level+'</div></div>'
+    + '<div class="card-stats">'
+    + '<div class="stat-row"><div class="stat-icon">🧬</div><div class="stat-info"><div class="stat-label">Race</div><div class="stat-value">'+race+'</div></div></div>'
+    + '<div class="stat-row"><div class="stat-icon">🍎</div><div class="stat-info"><div class="stat-label">Trái đang dùng</div><div class="stat-value fruit-text">'+escapeHtml(fruit)+'</div></div></div>'
+    + '<div class="stat-row"><div class="stat-icon">🎒</div><div class="stat-info"><div class="stat-label">Kho trái</div>'+renderInvFruitGrid(player.inventory_fruits||'')+'</div></div>'
+    + meleeRow
+    + invRow
+    + '</div>'
+    + '<div class="updated-time">CẬP NHẬT '+timeAgo(updated)+'</div>'
+    + '</div></div>';
 }
 
 async function fetchPlayers() {
   try {
-    const res = await fetch(SUPABASE_URL + '/rest/v1/player_stats?select=*&order=updated_at.desc', {
-      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
+    var res = await fetch(SUPABASE_URL+'/rest/v1/player_stats?select=*&order=updated_at.desc', {
+      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}
     });
-    const data = await res.json();
-    co
+    var data = await res.json();
+    var grid = document.getElementById('players-grid');
+    var summary = document.getElementById('summary');
+    if (!data||data.length===0) {
+      grid.innerHTML='<div class="empty-state"><div class="icon">📡</div><p>CHƯA CÓ DỮ LIỆU</p></div>';
+      return;
+    }
+    document.getElementById('total-count').textContent=data.length;
+    summary.style.display='flex';
+    grid.innerHTML=data.map(function(p,i){return renderCard(p,i);}).join('');
+    var nowVN=new Date(Date.now()+7*3600*1000);
+    document.getElementById('last-update').textContent='CẬP NHẬT LÚC '+nowVN.toISOString().slice(11,19)+' (ICT)';
+  } catch(e) {
+    document.getElementById('players-grid').innerHTML='<div class="loading">LỖI KẾT NỐI</div>';
+  }
+}
+
+fetchPlayers();
+setInterval(fetchPlayers,30000);
+</script>
+</body>
+</html>
