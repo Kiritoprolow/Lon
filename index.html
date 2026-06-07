@@ -239,10 +239,7 @@ function getFruitEmoji(name) {
 // Render banner ảnh lớn (trái đang dùng)
 function renderFruitBanner(fruitName) {
   if (!fruitName || fruitName.toLowerCase() === 'none') {
-    return `<div class="fruit-banner">
-      <span class="fruit-banner-emoji">❌</span>
-      <span class="fruit-banner-label">NO FRUIT</span>
-    </div>`;
+    return '';
   }
   const data = getFruitData(fruitName);
   const rarity = data?.rarity || 'common';
