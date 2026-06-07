@@ -329,9 +329,23 @@ function renderCard(player, index) {
             <div class="stat-icon">🎒</div>
             <div class="stat-info">
               <div class="stat-label">Kho trái</div>
-              ${renderInvGrid(player.inventory_fruits || '')}
+              ${renderInvGrid(player.inventory_fruits || "")}
             </div>
           </div>
+          ${player.melee ? `<div class="stat-row">
+            <div class="stat-icon">👊</div>
+            <div class="stat-info">
+              <div class="stat-label">Melee</div>
+              <div class="stat-value">${escapeHtml(player.melee)}</div>
+            </div>
+          </div>` : ""}
+          ${player.inventory ? `<div class="stat-row">
+            <div class="stat-icon">⚔️</div>
+            <div class="stat-info">
+              <div class="stat-label">Vũ khí</div>
+              <div class="stat-value">${escapeHtml(player.inventory)}</div>
+            </div>
+          </div>` : ""}
         </div>
         <div class="updated-time">CẬP NHẬT ${timeAgo(updated)}</div>
       </div>
