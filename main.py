@@ -20,6 +20,10 @@ threading.Thread(target=keep_alive, daemon=True).start()
 
 app = FastAPI()
 
+@app.get("/")
+async def root():
+    return {"status": "alive"}
+
 @app.get("/health")
 async def health():
     return {"status": "alive"}
